@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace ContactManager.App.Controllers
-{
+namespace ContactManager.App.Controllers;
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -29,4 +29,3 @@ namespace ContactManager.App.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
-}
