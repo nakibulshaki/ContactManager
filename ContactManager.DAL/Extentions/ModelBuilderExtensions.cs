@@ -8,10 +8,18 @@ public static class ModelBuilderExtensions
     {
         // Configure entities here using modelBuilder.Entity<TEntity>()
         // Example: modelBuilder.Entity<TEntity>().Property(e => e.PropertyName).IsRequired();
+        // Configure one-to-many relationship between Contact and EmailAddress
         modelBuilder.Entity<Contact>()
-              .HasIndex(c => c.PrimaryEmail)
-              .IsUnique()
-              .HasFilter("[PrimaryEmail] IS NOT NULL");
+            .HasMany(c => c.EmailAddresses)
+            .WithOne(e => e.Contact)
+            .HasForeignKey(e => e.ContactId);
+
+        // Add unique constraint for primary email per contact
+        modelBuilder.Entity<Contact>()
+            .HasIndex(c => c.PrimaryEmailAddressId)
+            .IsUnique();
+
+
     }
     public static void SeedData(this ModelBuilder modelBuilder)
     {
@@ -24,7 +32,7 @@ public static class ModelBuilderExtensions
                     FirstName = "Bill",
                     LastName = "Gates",
                     DOB = new DateTime(1960, 05, 01),
-                    PrimaryEmail = "test1@test.com"
+                  //  PrimaryEmail = "test1@test.com"
                 };
 
         var steve =
@@ -35,7 +43,7 @@ public static class ModelBuilderExtensions
                 FirstName = "Steve",
                 LastName = "Jobs",
                 DOB = new DateTime(1950, 09, 21),
-                PrimaryEmail = "test2@test.com"
+              //  PrimaryEmail = "test2@test.com"
 
             };
 
@@ -47,7 +55,7 @@ public static class ModelBuilderExtensions
                 FirstName = "Sundar",
                 LastName = "Pichai",
                 DOB = new DateTime(1980, 01, 11),
-                PrimaryEmail = "test3@test.com"
+              //  PrimaryEmail = "test3@test.com"
 
             };
 
@@ -60,7 +68,8 @@ public static class ModelBuilderExtensions
                 Id = new Guid("5111f412-a7f4-4169-bb27-632687569ccd"),
                 Email = "Bill@gates.com",
                 Type = EmailType.Personal,
-                ContactId = bill.Id
+                ContactId = bill.Id,
+                IsPrimary= true
             },
 
             new
@@ -68,7 +77,9 @@ public static class ModelBuilderExtensions
                 Id = new Guid("3ddeb084-5e5d-4eca-b275-e4f6886e04dc"),
                 Email = "Steve@Jobs.com",
                 Type = EmailType.Personal,
-                ContactId = steve.Id
+                ContactId = steve.Id,
+                IsPrimary = true
+
             },
 
             new
@@ -76,7 +87,9 @@ public static class ModelBuilderExtensions
                 Id = new Guid("3a406f64-ad7b-4098-ab01-7e93aae2b851"),
                 Email = "SteveJobs@apple.com",
                 Type = EmailType.Business,
-                ContactId = steve.Id
+                ContactId = steve.Id,
+                IsPrimary = true
+
             },
 
             new
@@ -84,7 +97,9 @@ public static class ModelBuilderExtensions
                 Id = new Guid("d1a50413-20c0-4972-a351-8be24e1fc939"),
                 Email = "SundarPichai@gmail.com",
                 Type = EmailType.Business,
-                ContactId = sundar.Id
+                ContactId = sundar.Id,
+                IsPrimary = false
+
             });
 
         modelBuilder.Entity<Address>().HasData(

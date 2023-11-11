@@ -42,10 +42,12 @@ $(function () {
         }
 
         if (validateEmail(emailAddress)) {
-                  $("#emailList").append(
+             $("#emailList").append(
             '<li class="list-group-item emailListItem" data-email="' + emailAddress + '" data-type="' + emailAddressType + '">' +
             '<span class="badge ' + emailTypeClass + ' m-l-10">' + emailAddressType + '</span>' +
-            '<span class="m-l-20">' + emailAddress + ' </span>' +
+             '<span class="m-l-20">' + emailAddress + ' </span>' +
+             '<span class="m-l-30"><input class="form-check-input primary-email-checkbox isPrimary" type="checkbox" >'+
+             '<label class= "form-check-label">Primary</label></span>' +
             '<a class="redText pointer float-right removeEmail" title="Delete Email">X</a>' +
             '</li>');
             $('#newEmailAddress').val("");  
@@ -111,10 +113,12 @@ $(function () {
     $(document).on("click", "#saveContactButton", function () {
         function getEmailAddresses() {
             return $(".emailListItem").map(function () {
-                return {
+                const result = {
                     Email: $(this).data("email"),
-                    Type: $(this).data("type")
+                    Type: $(this).data("type"),
+                    IsPrimary: $(this).find(".isPrimary").prop("checked")
                 }
+                return result
             }).get();
         }
 
@@ -251,4 +255,19 @@ $(function () {
 
         connection.start();
     }
+    document.addEventListener('change', function (event) {
+        var target = event.target;
+
+        if (target.classList.contains('primary-email-checkbox')) {
+            // Uncheck all other checkboxes
+            var checkboxes = document.querySelectorAll('.primary-email-checkbox');
+            checkboxes.forEach(function (otherCheckbox) {
+                if (otherCheckbox !== target) {
+                    otherCheckbox.checked = false;
+                }
+            });
+        }
+    });
+       
+   
 });

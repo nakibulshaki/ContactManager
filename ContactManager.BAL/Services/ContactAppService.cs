@@ -2,6 +2,9 @@
 using ContactManager.DAL.Contexts;
 using ContactManager.BAL.DTOs.Contacts;
 using Microsoft.EntityFrameworkCore;
+using ContactManager.BAL.Exceptions;
+using ContactManager.BAL.DTOs.Adresses;
+using ContactManager.BAL.DTOs.Emails;
 
 namespace ContactManager.BAL;
 
@@ -44,14 +47,26 @@ public class ContactAppService : IContactAppService
 
         return filteredContacts;
     }
-    public async Task<ContactPreviewDto> GetContactsAsync()
+    public async Task<IEnumerable<ContactPreviewDto>> GetContactsAsync()
     {
         var contacts = await _context.Contacts
                        .OrderBy(x => x.FirstName)
+                       .Select(x => new ContactPreviewDto
+                       {
+                           Id = x.Id,
+                           Title = x.Title,
+                           FirstName = x.FirstName,
+                           LastName = x.LastName,
+                           PrimaryEmail = x.PrimaryEmailAddress != null ?
+                                       x.PrimaryEmailAddress.Email :
+                                       x.EmailAddresses.FirstOrDefault().Email ?? "N/A"
+                       })
                        .ToListAsync();
 
-        return new ContactPreviewDto { Contacts = contacts };
+        return contacts;
     }
+  
+
     public async Task<Contact> CreateContactAsync(CreateUpdateContactDto model)
     {
         var contact = new Contact
@@ -61,63 +76,55 @@ public class ContactAppService : IContactAppService
             LastName = model.LastName,
             DOB = model.DOB
         };
-        // Add  email addresses
-        contact.EmailAddresses.AddRange(model.Emails.Select(email => new EmailAddress
-        {
-            Type = email.Type,
-            Email = email.Email,
-            Contact = contact
-        }));
 
-        // Add  addresses
-        contact.Addresses.AddRange(model.Addresses.Select(address => new Address
-        {
-            Street1 = address.Street1,
-            Street2 = address.Street2,
-            City = address.City,
-            State = address.State,
-            Zip = address.Zip,
-            Type = address.Type
-        }));
+        AddEmailsAndAddresses(contact, model.Emails, model.Addresses);
+
         await _context.Contacts.AddAsync(contact);
         await _context.SaveChangesAsync();
         return contact;
     }
+
     public async Task<Contact> UpdateContactAsync(CreateUpdateContactDto model)
     {
         var contact = await GetContactAsync(model.ContactId);
 
-        // Clear existing email addresses and addresses
         contact.EmailAddresses.Clear();
         contact.Addresses.Clear();
 
-        // Add new email addresses
-        contact.EmailAddresses.AddRange(model.Emails.Select(email => new EmailAddress
-        {
-            Type = email.Type,
-            Email = email.Email,
-            Contact = contact
-        }));
+        AddEmailsAndAddresses(contact, model.Emails, model.Addresses);
 
-        // Add new addresses
-        contact.Addresses.AddRange(model.Addresses.Select(address => new Address
-        {
-            Street1 = address.Street1,
-            Street2 = address.Street2,
-            City = address.City,
-            State = address.State,
-            Zip = address.Zip,
-            Type = address.Type
-        }));
-
-        // Update contact details
         contact.Title = model.Title;
         contact.FirstName = model.FirstName;
         contact.LastName = model.LastName;
         contact.DOB = model.DOB;
 
-        await _context.Contacts.AddAsync(contact);
         await _context.SaveChangesAsync();
         return contact;
+    }
+    private void AddEmailsAndAddresses(Contact contact, List<EmailDto> emails, List<AddressDto> addresses)
+    {
+        if (emails.Count < 1)
+            throw new NoItemsFoundException("No Email Found In Contact");
+
+        contact.EmailAddresses.AddRange(emails.Select(email => new EmailAddress
+        {
+            Type = email.Type,
+            Email = email.Email,
+            Contact = contact,
+            IsPrimary = email.IsPrimary
+        }));
+
+        if (addresses.Count < 1)
+            throw new NoItemsFoundException("No Address Found In Contact");
+
+        contact.Addresses.AddRange(addresses.Select(address => new Address
+        {
+            Street1 = address.Street1,
+            Street2 = address.Street2,
+            City = address.City,
+            State = address.State,
+            Zip = address.Zip,
+            Type = address.Type
+        }));
     }
 }
