@@ -1,4 +1,4 @@
-using ContactManager.Data;
+using ContactManager.DAL;
 using ContactManager.Hubs;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;

@@ -15,4 +15,7 @@
 		</PackageReference>
 		<PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\ContactManager.BAL\ContactManager.BAL.csproj" />
+	</ItemGroup>
 </Project>
