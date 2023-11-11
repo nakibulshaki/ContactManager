@@ -18,4 +18,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\ContactManager.BAL\ContactManager.BAL.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="logs\" />
+	</ItemGroup>
 </Project>

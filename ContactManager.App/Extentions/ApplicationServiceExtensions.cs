@@ -1,5 +1,5 @@
-﻿using ContactManager.Data.Contexts;
-using ContactMangaer.Core;
+﻿using ContactManager.DAL.Contexts;
+using ContactManager.BAL;
 using Microsoft.EntityFrameworkCore;
 
 namespace ContactManager.App.Extentions;

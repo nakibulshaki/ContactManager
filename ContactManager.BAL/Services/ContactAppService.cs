@@ -1,9 +1,9 @@
-﻿using ContactManager.Data;
-using ContactManager.Data.Contexts;
-using ContactMangaer.Core.DTOs.Contacts;
+﻿using ContactManager.DAL;
+using ContactManager.DAL.Contexts;
+using ContactManager.BAL.DTOs.Contacts;
 using Microsoft.EntityFrameworkCore;
 
-namespace ContactMangaer.Core;
+namespace ContactManager.BAL;
 
 public class ContactAppService : IContactAppService
 {

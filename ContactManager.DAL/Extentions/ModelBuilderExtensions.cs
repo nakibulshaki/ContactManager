@@ -1,4 +1,4 @@
-﻿using ContactManager.Data;
+﻿using ContactManager.DAL;
 using ContactMangaer.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 namespace ContactMangaer.Data.Extentions;

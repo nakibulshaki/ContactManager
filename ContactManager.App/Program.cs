@@ -1,13 +1,11 @@
-using ContactManager.DAL;
 using ContactManager.Hubs;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
-using ContactManager.Data.Contexts;
+using ContactManager.DAL.Contexts;
 using ContactManager.App.Extentions;
 using Serilog;
-using Microsoft.Extensions.DependencyInjection;
-
+using ContactManager.App;
 
 var builder = WebApplication.CreateBuilder(args);
 

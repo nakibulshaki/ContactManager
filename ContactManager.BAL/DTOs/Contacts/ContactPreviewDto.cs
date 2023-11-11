@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ContactManager.Data;
+﻿using ContactManager.DAL;
 
-namespace ContactMangaer.Core.DTOs.Contacts
+namespace ContactManager.BAL.DTOs.Contacts;
+
+public class ContactPreviewDto
 {
-    public class ContactPreviewDto
-    {
-        public List<Contact> Contacts { get; set; }
-    }
+    public List<Contact> Contacts { get; set; }
 }
+

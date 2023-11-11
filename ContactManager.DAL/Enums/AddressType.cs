@@ -1,9 +1,8 @@
-﻿namespace ContactMangaer.Data.Enums
+﻿namespace ContactMangaer.Data.Enums;
+public enum AddressType
 {
-    public enum AddressType
-    {
-        Primary,
-        Business
+    Primary,
+    Business
 
-    }
 }
+

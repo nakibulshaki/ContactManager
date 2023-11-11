@@ -1,19 +1,13 @@
-﻿using ContactManager.Data;
-using ContactMangaer.Core.DTOs.Contacts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ContactManager.DAL;
+using ContactManager.BAL.DTOs.Contacts;
 
-namespace ContactMangaer.Core
+namespace ContactManager.BAL;
+public interface IContactAppService
 {
-    public interface IContactAppService
-    {
-        Task DeleteAsync(Guid id);
-        Task<IEnumerable<EditContactDto>> GetEditContactByIdAsync(Guid id);
-        Task<ContactPreviewDto> GetContactsAsync();
-        Task<Contact> UpdateContactAsync(CreateUpdateContactDto model);
-        Task<Contact> CreateContactAsync(CreateUpdateContactDto model);
-    }
+    Task DeleteAsync(Guid id);
+    Task<IEnumerable<EditContactDto>> GetEditContactByIdAsync(Guid id);
+    Task<ContactPreviewDto> GetContactsAsync();
+    Task<Contact> UpdateContactAsync(CreateUpdateContactDto model);
+    Task<Contact> CreateContactAsync(CreateUpdateContactDto model);
 }
+

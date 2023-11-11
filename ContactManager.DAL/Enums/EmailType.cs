@@ -1,8 +1,8 @@
-﻿namespace ContactMangaer.Data.Enums
+﻿namespace ContactMangaer.Data.Enums;
+
+public enum EmailType
 {
-    public enum EmailType
-    {
-        Personal,
-        Business
-    }
+    Personal,
+    Business
 }
+

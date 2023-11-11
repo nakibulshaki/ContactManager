@@ -1,12 +1,10 @@
-﻿using ContactManager.Data;
-using ContactManager.Hubs;
+﻿using ContactManager.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using MailKit.Net.Smtp;
-using ContactMangaer.Core.DTOs.Contacts;
-using ContactMangaer.Core;
+using ContactManager.BAL.DTOs.Contacts;
+using ContactManager.BAL;
 
 namespace ContactManager.Controllers
 {
