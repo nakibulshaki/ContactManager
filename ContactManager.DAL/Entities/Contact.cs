@@ -9,6 +9,7 @@ public class Contact : Entity
     public DateTime DOB { get; set; }
     public virtual List<EmailAddress> EmailAddresses { get; set; }
     public virtual List<Address> Addresses { get; set; }
+    public string PrimaryEmail {  get; set; }
 }
 
 

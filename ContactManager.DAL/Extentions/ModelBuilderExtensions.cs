@@ -8,19 +8,24 @@ public static class ModelBuilderExtensions
     {
         // Configure entities here using modelBuilder.Entity<TEntity>()
         // Example: modelBuilder.Entity<TEntity>().Property(e => e.PropertyName).IsRequired();
+        modelBuilder.Entity<Contact>()
+              .HasIndex(c => c.PrimaryEmail)
+              .IsUnique()
+              .HasFilter("[PrimaryEmail] IS NOT NULL");
     }
     public static void SeedData(this ModelBuilder modelBuilder)
     {
         // Seed data for the specified entity using modelBuilder.Entity<TEntity>().HasData()
         var bill =
-                   new Contact
-                   {
-                       Id = new Guid("930d4f10-9daf-4582-b4bb-cb9abfd382b3"),
-                       Title = "Mr.",
-                       FirstName = "Bill",
-                       LastName = "Gates",
-                       DOB = new DateTime(1960, 05, 01)
-                   };
+                new Contact
+                {
+                    Id = new Guid("930d4f10-9daf-4582-b4bb-cb9abfd382b3"),
+                    Title = "Mr.",
+                    FirstName = "Bill",
+                    LastName = "Gates",
+                    DOB = new DateTime(1960, 05, 01),
+                    PrimaryEmail = "test1@test.com"
+                };
 
         var steve =
             new Contact
@@ -29,7 +34,9 @@ public static class ModelBuilderExtensions
                 Title = "Mr.",
                 FirstName = "Steve",
                 LastName = "Jobs",
-                DOB = new DateTime(1950, 09, 21)
+                DOB = new DateTime(1950, 09, 21),
+                PrimaryEmail = "test2@test.com"
+
             };
 
         var sundar =
@@ -39,7 +46,9 @@ public static class ModelBuilderExtensions
                 Title = "Mr.",
                 FirstName = "Sundar",
                 LastName = "Pichai",
-                DOB = new DateTime(1980, 01, 11)
+                DOB = new DateTime(1980, 01, 11),
+                PrimaryEmail = "test3@test.com"
+
             };
 
 
