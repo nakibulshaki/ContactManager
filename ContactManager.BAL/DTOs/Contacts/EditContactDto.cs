@@ -1,5 +1,5 @@
 ﻿using ContactManager.DAL;
-namespace ContactManager.BAL.DTOs.Contacts
+namespace ContactManager.BAL.DTOs.Contacts;
 
 public class EditContactDto
 {
