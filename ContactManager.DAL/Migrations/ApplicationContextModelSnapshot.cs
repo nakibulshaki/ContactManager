@@ -123,8 +123,8 @@ namespace ContactManager.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PrimaryEmailAddressId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("PrimaryEmailAddressId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -174,9 +174,6 @@ namespace ContactManager.DAL.Migrations
                     b.Property<Guid>("ContactId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ContactId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -189,11 +186,9 @@ namespace ContactManager.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContactId");
-
-                    b.HasIndex("ContactId1")
-                        .IsUnique()
-                        .HasFilter("[ContactId1] IS NOT NULL");
+                    b.HasIndex("ContactId", "IsPrimary")
+                        .HasDatabaseName("UQ_EmailAddress_ContactId_IsPrimary")
+                        .HasFilter("IsPrimary = 1");
 
                     b.ToTable("EmailAddresses");
 
@@ -216,14 +211,6 @@ namespace ContactManager.DAL.Migrations
                         },
                         new
                         {
-                            Id = new Guid("3a406f64-ad7b-4098-ab01-7e93aae2b851"),
-                            ContactId = new Guid("b728f6ef-65d8-4da2-8e5f-0f67e3c3401c"),
-                            Email = "SteveJobs@apple.com",
-                            IsPrimary = true,
-                            Type = 1
-                        },
-                        new
-                        {
                             Id = new Guid("d1a50413-20c0-4972-a351-8be24e1fc939"),
                             ContactId = new Guid("99580d68-9d2f-4552-862e-06b3204193f1"),
                             Email = "SundarPichai@gmail.com",
@@ -243,6 +230,16 @@ namespace ContactManager.DAL.Migrations
                     b.Navigation("Contact");
                 });
 
+            modelBuilder.Entity("ContactManager.DAL.Contact", b =>
+                {
+                    b.HasOne("ContactManager.DAL.EmailAddress", "PrimaryEmailAddress")
+                        .WithOne()
+                        .HasForeignKey("ContactManager.DAL.Contact", "PrimaryEmailAddressId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("PrimaryEmailAddress");
+                });
+
             modelBuilder.Entity("ContactManager.DAL.EmailAddress", b =>
                 {
                     b.HasOne("ContactManager.DAL.Contact", "Contact")
@@ -250,10 +247,6 @@ namespace ContactManager.DAL.Migrations
                         .HasForeignKey("ContactId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("ContactManager.DAL.Contact", null)
-                        .WithOne("PrimaryEmailAddress")
-                        .HasForeignKey("ContactManager.DAL.EmailAddress", "ContactId1");
 
                     b.Navigation("Contact");
                 });
@@ -263,9 +256,6 @@ namespace ContactManager.DAL.Migrations
                     b.Navigation("Addresses");
 
                     b.Navigation("EmailAddresses");
-
-                    b.Navigation("PrimaryEmailAddress")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -8,26 +8,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ContactManager.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class inicialcreate : Migration
+    public partial class addPrimaryEmailAddress : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Contacts",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DOB = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Contacts", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Addresses",
                 columns: table => new
@@ -44,12 +29,22 @@ namespace ContactManager.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Addresses", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Addresses_Contacts_ContactId",
-                        column: x => x.ContactId,
-                        principalTable: "Contacts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Contacts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DOB = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PrimaryEmailAddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Contacts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -59,6 +54,7 @@ namespace ContactManager.DAL.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
+                    IsPrimary = table.Column<bool>(type: "bit", nullable: false),
                     ContactId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -74,12 +70,12 @@ namespace ContactManager.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "Contacts",
-                columns: new[] { "Id", "DOB", "FirstName", "LastName", "Title" },
+                columns: new[] { "Id", "DOB", "FirstName", "LastName", "PrimaryEmailAddressId", "Title" },
                 values: new object[,]
                 {
-                    { new Guid("930d4f10-9daf-4582-b4bb-cb9abfd382b3"), new DateTime(1960, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Bill", "Gates", "Mr." },
-                    { new Guid("99580d68-9d2f-4552-862e-06b3204193f1"), new DateTime(1980, 1, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sundar", "Pichai", "Mr." },
-                    { new Guid("b728f6ef-65d8-4da2-8e5f-0f67e3c3401c"), new DateTime(1950, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "Steve", "Jobs", "Mr." }
+                    { new Guid("930d4f10-9daf-4582-b4bb-cb9abfd382b3"), new DateTime(1960, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Bill", "Gates", null, "Mr." },
+                    { new Guid("99580d68-9d2f-4552-862e-06b3204193f1"), new DateTime(1980, 1, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sundar", "Pichai", null, "Mr." },
+                    { new Guid("b728f6ef-65d8-4da2-8e5f-0f67e3c3401c"), new DateTime(1950, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "Steve", "Jobs", null, "Mr." }
                 });
 
             migrationBuilder.InsertData(
@@ -95,13 +91,12 @@ namespace ContactManager.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "EmailAddresses",
-                columns: new[] { "Id", "ContactId", "Email", "Type" },
+                columns: new[] { "Id", "ContactId", "Email", "IsPrimary", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("3a406f64-ad7b-4098-ab01-7e93aae2b851"), new Guid("b728f6ef-65d8-4da2-8e5f-0f67e3c3401c"), "SteveJobs@apple.com", 1 },
-                    { new Guid("3ddeb084-5e5d-4eca-b275-e4f6886e04dc"), new Guid("b728f6ef-65d8-4da2-8e5f-0f67e3c3401c"), "Steve@Jobs.com", 0 },
-                    { new Guid("5111f412-a7f4-4169-bb27-632687569ccd"), new Guid("930d4f10-9daf-4582-b4bb-cb9abfd382b3"), "Bill@gates.com", 0 },
-                    { new Guid("d1a50413-20c0-4972-a351-8be24e1fc939"), new Guid("99580d68-9d2f-4552-862e-06b3204193f1"), "SundarPichai@gmail.com", 1 }
+                    { new Guid("3ddeb084-5e5d-4eca-b275-e4f6886e04dc"), new Guid("b728f6ef-65d8-4da2-8e5f-0f67e3c3401c"), "Steve@Jobs.com", true, 0 },
+                    { new Guid("5111f412-a7f4-4169-bb27-632687569ccd"), new Guid("930d4f10-9daf-4582-b4bb-cb9abfd382b3"), "Bill@gates.com", true, 0 },
+                    { new Guid("d1a50413-20c0-4972-a351-8be24e1fc939"), new Guid("99580d68-9d2f-4552-862e-06b3204193f1"), "SundarPichai@gmail.com", false, 1 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -110,22 +105,50 @@ namespace ContactManager.DAL.Migrations
                 column: "ContactId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmailAddresses_ContactId",
+                name: "IX_Contacts_PrimaryEmailAddressId",
+                table: "Contacts",
+                column: "PrimaryEmailAddressId",
+                unique: true,
+                filter: "[PrimaryEmailAddressId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "UQ_EmailAddress_ContactId_IsPrimary",
                 table: "EmailAddresses",
-                column: "ContactId");
+                columns: new[] { "ContactId", "IsPrimary" },
+                filter: "IsPrimary = 1");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Addresses_Contacts_ContactId",
+                table: "Addresses",
+                column: "ContactId",
+                principalTable: "Contacts",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Contacts_EmailAddresses_PrimaryEmailAddressId",
+                table: "Contacts",
+                column: "PrimaryEmailAddressId",
+                principalTable: "EmailAddresses",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_EmailAddresses_Contacts_ContactId",
+                table: "EmailAddresses");
+
             migrationBuilder.DropTable(
                 name: "Addresses");
 
             migrationBuilder.DropTable(
-                name: "EmailAddresses");
+                name: "Contacts");
 
             migrationBuilder.DropTable(
-                name: "Contacts");
+                name: "EmailAddresses");
         }
     }
 }

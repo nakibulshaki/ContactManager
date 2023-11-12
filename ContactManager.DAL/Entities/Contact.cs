@@ -11,7 +11,7 @@ public class Contact : Entity
     public virtual List<Address> Addresses { get; set; } = new List<Address>();
 
     // New property to store the primary email address
-    public int? PrimaryEmailAddressId { get; set; }
+    public Guid? PrimaryEmailAddressId { get; set; }
     public virtual EmailAddress PrimaryEmailAddress { get; set; }
 }
 

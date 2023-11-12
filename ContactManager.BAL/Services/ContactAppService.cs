@@ -74,13 +74,20 @@ public class ContactAppService : IContactAppService
             Title = model.Title,
             FirstName = model.FirstName,
             LastName = model.LastName,
-            DOB = model.DOB
+            DOB = model.DOB,
         };
 
         AddEmailsAndAddresses(contact, model.Emails, model.Addresses);
 
         await _context.Contacts.AddAsync(contact);
         await _context.SaveChangesAsync();
+
+        var primaryEmail = contact.EmailAddresses.FirstOrDefault(x => x.IsPrimary);
+        if (primaryEmail != null)
+        {
+          contact.PrimaryEmailAddressId = primaryEmail.Id;
+          await _context.SaveChangesAsync();
+        }
         return contact;
     }
 
@@ -97,8 +104,14 @@ public class ContactAppService : IContactAppService
         contact.FirstName = model.FirstName;
         contact.LastName = model.LastName;
         contact.DOB = model.DOB;
-
         await _context.SaveChangesAsync();
+
+        var primaryEmail = contact.EmailAddresses.FirstOrDefault(x => x.IsPrimary);
+        if (primaryEmail != null)
+        {
+            contact.PrimaryEmailAddressId = primaryEmail.Id;
+            await _context.SaveChangesAsync();
+        }
         return contact;
     }
     private void AddEmailsAndAddresses(Contact contact, List<EmailDto> emails, List<AddressDto> addresses)

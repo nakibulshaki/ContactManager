@@ -6,20 +6,27 @@ public static class ModelBuilderExtensions
 {
     public static void ConfigureEntity(this ModelBuilder modelBuilder)
     {
-        // Configure entities here using modelBuilder.Entity<TEntity>()
-        // Example: modelBuilder.Entity<TEntity>().Property(e => e.PropertyName).IsRequired();
-        // Configure one-to-many relationship between Contact and EmailAddress
+
+
+        // Configure the relationship between Contact and EmailAddress
         modelBuilder.Entity<Contact>()
             .HasMany(c => c.EmailAddresses)
             .WithOne(e => e.Contact)
-            .HasForeignKey(e => e.ContactId);
+            .HasForeignKey(e => e.ContactId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // Add unique constraint for primary email per contact
+        // Configure the relationship for the PrimaryEmailAddress using Fluent API
         modelBuilder.Entity<Contact>()
-            .HasIndex(c => c.PrimaryEmailAddressId)
-            .IsUnique();
+            .HasOne(c => c.PrimaryEmailAddress)
+            .WithOne()  // Remove the navigation property on the other side
+            .HasForeignKey<Contact>(c => c.PrimaryEmailAddressId)
+            .OnDelete(DeleteBehavior.Restrict);
 
 
+        modelBuilder.Entity<EmailAddress>()
+            .HasIndex(e => new { e.ContactId, e.IsPrimary })
+            .HasFilter("IsPrimary = 1")
+            .HasName("UQ_EmailAddress_ContactId_IsPrimary");
     }
     public static void SeedData(this ModelBuilder modelBuilder)
     {
@@ -32,7 +39,6 @@ public static class ModelBuilderExtensions
                     FirstName = "Bill",
                     LastName = "Gates",
                     DOB = new DateTime(1960, 05, 01),
-                  //  PrimaryEmail = "test1@test.com"
                 };
 
         var steve =
@@ -43,8 +49,6 @@ public static class ModelBuilderExtensions
                 FirstName = "Steve",
                 LastName = "Jobs",
                 DOB = new DateTime(1950, 09, 21),
-              //  PrimaryEmail = "test2@test.com"
-
             };
 
         var sundar =
@@ -55,8 +59,6 @@ public static class ModelBuilderExtensions
                 FirstName = "Sundar",
                 LastName = "Pichai",
                 DOB = new DateTime(1980, 01, 11),
-              //  PrimaryEmail = "test3@test.com"
-
             };
 
 
@@ -69,7 +71,7 @@ public static class ModelBuilderExtensions
                 Email = "Bill@gates.com",
                 Type = EmailType.Personal,
                 ContactId = bill.Id,
-                IsPrimary= true
+                IsPrimary = true
             },
 
             new
@@ -81,17 +83,6 @@ public static class ModelBuilderExtensions
                 IsPrimary = true
 
             },
-
-            new
-            {
-                Id = new Guid("3a406f64-ad7b-4098-ab01-7e93aae2b851"),
-                Email = "SteveJobs@apple.com",
-                Type = EmailType.Business,
-                ContactId = steve.Id,
-                IsPrimary = true
-
-            },
-
             new
             {
                 Id = new Guid("d1a50413-20c0-4972-a351-8be24e1fc939"),
