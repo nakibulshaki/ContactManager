@@ -54,7 +54,10 @@
                                         <span class="badge badge-success m-l-10"> @emailAddress.Type</span>
                                     }
                                 }
-
+                            <span class="m-l-30">
+                                <input class="form-check-input primary-email-checkbox isPrimary" type="checkbox" checked="@emailAddress.IsPrimary">
+                                <label class="form-check-label">Primary</label>
+                            </span>
                                 <span class="m-l-20">@emailAddress.Email</span>
                                 <a class="redText pointer float-right removeEmail" title="Delete Email">X</a>
                             </li>

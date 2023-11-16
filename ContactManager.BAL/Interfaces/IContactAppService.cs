@@ -5,7 +5,7 @@ namespace ContactManager.BAL;
 public interface IContactAppService
 {
     Task DeleteAsync(Guid id);
-    Task<IEnumerable<EditContactDto>> GetEditContactByIdAsync(Guid id);
+    Task <EditContactDto>GetEditContactByIdAsync(Guid id);
     Task<IEnumerable<ContactPreviewDto>> GetContactsAsync();
     Task<Contact> UpdateContactAsync(CreateUpdateContactDto model);
     Task<Contact> CreateContactAsync(CreateUpdateContactDto model);

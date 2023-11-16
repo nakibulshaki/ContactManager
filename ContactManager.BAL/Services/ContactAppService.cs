@@ -30,9 +30,9 @@ public class ContactAppService : IContactAppService
             .FirstOrDefaultAsync(x => x.Id == contactId);
         return contact;
     }
-    public async Task<IEnumerable<EditContactDto>> GetEditContactByIdAsync(Guid id)
+    public async Task<EditContactDto> GetEditContactByIdAsync(Guid id)
     {
-        var filteredContacts = await _context.Contacts
+        var filteredContact = await _context.Contacts
                             .Where(x => x.Id == id)
                             .Select(contact => new EditContactDto
                             {
@@ -43,9 +43,9 @@ public class ContactAppService : IContactAppService
                                 DOB = contact.DOB,
                                 EmailAddresses = contact.EmailAddresses,
                                 Addresses = contact.Addresses
-                            }).ToListAsync();
+                            }).FirstOrDefaultAsync();
 
-        return filteredContacts;
+        return filteredContact;
     }
     public async Task<IEnumerable<ContactPreviewDto>> GetContactsAsync()
     {

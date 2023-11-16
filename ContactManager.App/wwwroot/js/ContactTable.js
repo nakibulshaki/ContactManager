@@ -14,6 +14,8 @@ $(function () {
             data: { "Id": id },
             datatype: "json",
             success: function (data) {
+                console.log(data);
+                debugger;
                 $('#EditContactModalContent').html(data);
                 $('#modal-editContact').modal('show');
                 $("#ServerErrorAlert").hide();
@@ -82,23 +84,23 @@ $(function () {
         }
 
         //if (validateAddress(address)) {
-            $("#addressList").append(
-                '<li class="list-group-item addressListItem" data-street1="' + street1 + '" data-street2="' + street2 + '" data-city="' +
-                city + '" data-state="' + state + '" data-zip="' + zip + '" data-type="' + addressType + '">' +
-                '<span class="badge ' + addressTypeClass + ' m-l-10">' + addressType + '</span>' +
-                '<span class="m-l-20">' + address + ' </span>' +
-                '<a class="redText pointer float-right removeAddress" title="Delete Address">X</a>' +
-                '</li>');
+        $("#addressList").append(
+            '<li class="list-group-item addressListItem" data-street1="' + street1 + '" data-street2="' + street2 + '" data-city="' +
+            city + '" data-state="' + state + '" data-zip="' + zip + '" data-type="' + addressType + '">' +
+            '<span class="badge ' + addressTypeClass + ' m-l-10">' + addressType + '</span>' +
+            '<span class="m-l-20">' + address + ' </span>' +
+            '<a class="redText pointer float-right removeAddress" title="Delete Address">X</a>' +
+            '</li>');
 
-            $('#newAddressStreet1').val("");
-            $('#newAddressStreet2').val("");
-            $('#newAddressCity').val("");
-            $('#newAddressState').val("");
-            $('#newAddressZip').val("");
+        $('#newAddressStreet1').val("");
+        $('#newAddressStreet2').val("");
+        $('#newAddressCity').val("");
+        $('#newAddressState').val("");
+        $('#newAddressZip').val("");
 
-            //$('.addressInput').removeClass("invalidInput");
+        //$('.addressInput').removeClass("invalidInput");
 
-            //$('.addressFeedback').hide();
+        //$('.addressFeedback').hide();
         //} 
     });
 
@@ -113,12 +115,11 @@ $(function () {
     $(document).on("click", "#saveContactButton", function () {
         function getEmailAddresses() {
             return $(".emailListItem").map(function () {
-                const result = {
+                return {
                     Email: $(this).data("email"),
                     Type: $(this).data("type"),
                     IsPrimary: $(this).find(".isPrimary").prop("checked")
                 }
-                return result
             }).get();
         }
 
@@ -218,7 +219,7 @@ $(function () {
             }
         });
     });
- 
+
     function loadContactTable() {
         $.ajax({
             type: "GET",
@@ -255,19 +256,4 @@ $(function () {
 
         connection.start();
     }
-    document.addEventListener('change', function (event) {
-        var target = event.target;
-
-        if (target.classList.contains('primary-email-checkbox')) {
-            // Uncheck all other checkboxes
-            var checkboxes = document.querySelectorAll('.primary-email-checkbox');
-            checkboxes.forEach(function (otherCheckbox) {
-                if (otherCheckbox !== target) {
-                    otherCheckbox.checked = false;
-                }
-            });
-        }
-    });
-       
-   
 });
